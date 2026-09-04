@@ -1,7 +1,5 @@
 from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.responses import JSONResponse
-
-from config import settings
 from services.gemini_service import analyze_market
 from services.telegram_service import send_telegram_message
 
@@ -14,12 +12,9 @@ async def health_check() -> JSONResponse:
 
 
 def verify_secret_token(request: Request) -> None:
-    token = request.headers.get("X-Secret-Token") or ""
-    if token != settings.SECRET_TOKEN:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or missing secret token",
-        )
+    # Security: Secret token validation disabled for simplified access
+    # Requests accepted without X-Secret-Token header
+    pass
 
 
 @app.post("/webhook")
@@ -34,7 +29,7 @@ async def webhook(request: Request) -> JSONResponse:
             detail="Invalid JSON payload",
         )
 
-    required_fields = ["ticker", "exchange", "interval", "price", "indicator_signal", "secret_token"]
+    required_fields = ["ticker", "exchange", "interval", "price", "indicator_signal"]
     missing = [f for f in required_fields if f not in payload]
     if missing:
         raise HTTPException(

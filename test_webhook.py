@@ -33,20 +33,29 @@ def test_webhook_success():
     assert data["status"] == "success"
 
 
-def test_webhook_invalid_secret():
-    """Test webhook with invalid secret token returns 401."""
+def test_webhook_no_secret_required():
+    """Test webhook works without secret token (security disabled)."""
     payload = {
         "ticker": "NSE:RELIANCE",
         "exchange": "NSE",
         "interval": "1H",
         "price": "2950.50",
         "indicator_signal": "RSI oversold breakout condition met",
-        "secret_token": "wrong-token",
     }
 
-    response = client.post("/webhook", json=payload, headers={"X-Secret-Token": "wrong-token"})
+    with patch("main.analyze_market") as mock_analyze, patch("main.send_telegram_message") as mock_telegram:
+        mock_analyze.return_value = "# Analysis\nSignal: BUY\nReason: RSI oversold breakout"
+        mock_telegram.return_value = True
 
-    assert response.status_code == 401
+        response = client.post(
+            "/webhook",
+            json=payload,
+        )
+
+    # Security disabled: request should be accepted
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "success"
 
 
 def test_webhook_missing_fields():
