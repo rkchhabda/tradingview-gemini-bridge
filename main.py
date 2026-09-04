@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.responses import JSONResponse
-from services.gemini_service import analyze_market
+from services.gemini_service import analyze_market_signal
 from services.telegram_service import send_telegram_message
 
 app = FastAPI(title="TradingView-Gemini-Telegram Webhook")
@@ -21,9 +21,12 @@ async def root() -> JSONResponse:
 
 
 def verify_secret_token(request: Request) -> None:
-    # Security: Secret token validation disabled for simplified access
-    # Requests accepted without X-Secret-Token header
-    pass
+    secret_token = request.headers.get("X-Secret-Token")
+    if not secret_token or secret_token != SECRET_TOKEN:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or missing secret token",
+        )
 
 
 @app.post("/webhook")
@@ -47,11 +50,11 @@ async def webhook(request: Request) -> JSONResponse:
         )
 
     try:
-        report = analyze_market(payload)
+        report = analyze_market_signal(payload)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"Gemini API error: {str(e)}",
+            detail=f"AI API error: {str(e)}",
         )
 
     try:
