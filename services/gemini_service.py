@@ -1,38 +1,21 @@
-GEMINI_API_KEY = "GEMINI_API_KEY_AQ_FORMAT_EXPERIMENTAL"
+from openai import OpenAI
+
+# Experimental hardcoded Groq configuration for ultra-fast inference
+GROQ_API_KEY = "GROQ_API_KEY_EXPERIMENTAL"
+client = OpenAI(
+    base_url="https://api.groq.com/openai/v1",
+    api_key=GROQ_API_KEY,
+)
 
 
-from google import genai
-
-
-def create_gemini_client():
-    return genai.Client(vertexai=True, api_key=GEMINI_API_KEY)
-
-
-def analyze_market(payload: dict) -> str:
-    client = create_gemini_client()
-
-    prompt = f"""
-You are a professional trading analyst. Analyze the following market data from a TradingView alert and provide a concise Markdown report.
-
-Payload data:
-- Ticker: {payload.get('ticker', 'N/A')}
-- Exchange: {payload.get('exchange', 'N/A')}
-- Interval: {payload.get('interval', 'N/A')}
-- Price: {payload.get('price', 'N/A')}
-- Indicator Signal: {payload.get('indicator_signal', 'N/A')}
-
-Please provide:
-1. Signal validity assessment (is this a trustworthy signal?)
-2. Key risk levels
-3. Immediate execution considerations
-4. Suggested action (BUY/SELL/HOLD with reasoning)
-
-Keep the response concise and formatted in clean Markdown.
-"""
-
-    response = client.models.generate_content(
-        model="gemini-1.5-flash",
-        contents=prompt,
+def analyze_market_signal(payload: dict) -> str:
+    response = client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[
+            {"role": "system", "content": "You are an expert quantitative financial analyst providing actionable market insights."},
+            {"role": "user", "content": f"Analyze this TradingView alert signal: {payload}"},
+        ],
+        temperature=0.3,
+        max_tokens=500,
     )
-
-    return response.text or "No response from Gemini API"
+    return response.choices[0].message.content
