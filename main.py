@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.responses import JSONResponse
-from services.gemini_service import analyze_market_signal
+from services.gemini_service import analyze_market_signal  # Groq API v2
 from services.telegram_service import send_telegram_message
 
 app = FastAPI(title="TradingView-Gemini-Telegram Webhook")
