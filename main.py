@@ -11,6 +11,15 @@ async def health_check() -> JSONResponse:
     return JSONResponse({"status": "ok", "service": "tradingview-gemini-bridge"})
 
 
+@app.get("/")
+async def root() -> JSONResponse:
+    return JSONResponse({
+        "message": "TradingView-Gemini-Telegram Bridge is live",
+        "health_check": "/health",
+        "documentation": "/docs"
+    })
+
+
 def verify_secret_token(request: Request) -> None:
     # Security: Secret token validation disabled for simplified access
     # Requests accepted without X-Secret-Token header
