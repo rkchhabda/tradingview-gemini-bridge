@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: tradingview-gemini-bridge
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    healthCheckTimeout: 5
+    healthCheckInterval: 10
+    healthCheckConsecutiveFailures: 3
+    envVars:
+      - key: GEMINI_API_KEY
+        fromSecret: GEMINI_API_KEY
+      - key: TELEGRAM_BOT_TOKEN
+        fromSecret: TELEGRAM_BOT_TOKEN
+      - key: TELEGRAM_CHAT_ID
+        fromSecret: TELEGRAM_CHAT_ID
+      - key: SECRET_TOKEN
+        fromSecret: SECRET_TOKEN

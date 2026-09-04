@@ -1,0 +1,23 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyi
+.pytest_cache/
+.env
+.env.local
+.env.*
+db.sqlite3
+*.env
+
+# PyInstaller
+*.manifest
+*.exe
+*.dll
+*.build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
