@@ -1,11 +1,11 @@
-from google.genai import types
-from google import genai
+GEMINI_API_KEY = "GEMINI_API_KEY_AQ_FORMAT_EXPERIMENTAL"
 
-from config import settings
+
+from google import genai
 
 
 def create_gemini_client():
-    return genai.Client(api_key=settings.GEMINI_API_KEY)
+    return genai.Client(vertexai=True, api_key=GEMINI_API_KEY)
 
 
 def analyze_market(payload: dict) -> str:

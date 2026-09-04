@@ -1,12 +1,6 @@
-import os
-from dotenv import load_dotenv
+GEMINI_API_KEY = "GEMINI_API_KEY_AQ_FORMAT_EXPERIMENTAL"
+TELEGRAM_BOT_TOKEN = "TELEGRAM_BOT_TOKEN_EXPERIMENTAL"
+TELEGRAM_CHAT_ID = "TELEGRAM_CHAT_ID_EXPERIMENTAL"
+SECRET_TOKEN = "test_token_123"
 
-load_dotenv()
-
-class Settings:
-    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
-    TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
-    TELEGRAM_CHAT_ID: str = os.getenv("TELEGRAM_CHAT_ID", "")
-    SECRET_TOKEN: str = os.getenv("SECRET_TOKEN", "")
-
-settings = Settings()
+settings = None  # Disabled os.getenv() dependencies for hardcoded experimental testing
