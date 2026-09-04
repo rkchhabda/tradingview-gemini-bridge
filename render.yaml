@@ -3,7 +3,7 @@ services:
     name: tradingview-gemini-bridge
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt && echo "FORCED_REBUILD"
+    buildCommand: pip install -r requirements.txt && python -c "import hashlib; print(hashlib.md5(open('requirements.txt','rb').read().strip().encode()).hexdigest()[:8])"
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     envVars:
